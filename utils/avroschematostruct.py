@@ -1,13 +1,21 @@
+import pytest, sys
+from pathlib import Path # if you haven't already done so
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+
 import avro.schema
 from pyspark.sql.types import *
 from pyspark import SparkContext
 from pyspark.sql import SQLContext
 import json
 
-schemapath = r'.\data\simpleavro.avsc'
-csvpath = r".\data\people.txt"
-schema1 = open(schemapath, "r").read()
-schemaobj = json.loads(schema1)
+#schemapath = r'.\data\simpleavro.avsc'
+#csvpath = r".\data\people.txt"
+
+def inpschema(schemapath):
+    schema1 = open(schemapath, "r").read()
+    return json.loads(schema1)
 
 # convert avro datatypes to equivalent Sql types
 def avrotoSqldtypes(avrodtype):
@@ -49,24 +57,24 @@ def converttoStruct(inpSchema):
         else:
             return StructField(inpSchema['name'],converttoStruct(inpSchema['type'][1]), mandatory(inpSchema))
 
-
-x = converttoStruct(schemaobj)
-print(x)
+#schemaobj = inpschema(schemapath)
+#x = converttoStruct(schemaobj)
+#print(x)
 
 # Test the schema 
 
-sc = SparkContext('local[*]', 'Avro schema converter')
-sqlContext = SQLContext(sc)
+#sc = SparkContext('local[*]', 'Avro schema converter')
+#sqlContext = SQLContext(sc)
 
 
-lines = sc.textFile(csvpath)
-parts = lines.map(lambda l: l.split(","))
+#lines = sc.textFile(csvpath)
+#parts = lines.map(lambda l: l.split(","))
 # Each line is converted to a tuple.
-people = parts.map(lambda p: (p[0], int(p[1])))
+#people = parts.map(lambda p: (p[0], int(p[1])))
 
 # The schema is encoded in a string.
 #schemaString = "name age"
 
 # Apply the schema to the RDD.
-dfpeople = sqlContext.createDataFrame(people, x)
-dfpeople.show()
+#dfpeople = sqlContext.createDataFrame(people, x)
+#dfpeople.show()
