@@ -10,7 +10,7 @@ from pyspark import SparkContext
 from pyspark.sql import SQLContext
 import json
 
-#schemapath = r'.\data\simpleavro.avsc'
+schemapath = r'.\data\simpleavro.avsc'
 #csvpath = r".\data\people.txt"
 
 def inpschema(schemapath):
@@ -37,6 +37,7 @@ def mandatory(inpschema):
 
 # converts Json object of avro schema to Struct Type
 def converttoStruct(inpSchema):
+  
     if inpSchema['type'] == "record":
         return StructType([converttoStruct(f) for f in inpSchema['fields']])
 
@@ -52,14 +53,16 @@ def converttoStruct(inpSchema):
   
   #This takes the union type, it takes the datatype at position 1 in the list. This need to be changed to infer datatype from the avroschema
     if type(inpSchema['type']) == list:
-        if inpSchema['type'][1] in ["int", "string","boolean"]:
-            return StructField(inpSchema['name'], avrotoSqldtypes(inpSchema['type'][1]), mandatory(inpSchema))
-        else:
-            return StructField(inpSchema['name'],converttoStruct(inpSchema['type'][1]), mandatory(inpSchema))
 
-#schemaobj = inpschema(schemapath)
-#x = converttoStruct(schemaobj)
-#print(x)
+        inpSchema['type'].remove('null')
+        if inpSchema['type'][0] in ["int", "string","boolean"]:
+            return StructField(inpSchema['name'], avrotoSqldtypes(inpSchema['type'][0]), mandatory(inpSchema))
+        else:
+            return StructField(inpSchema['name'],converttoStruct(inpSchema['type'][0]), mandatory(inpSchema))
+
+schemaobj = inpschema(schemapath)
+x = converttoStruct(schemaobj)
+print(x)
 
 # Test the schema 
 
