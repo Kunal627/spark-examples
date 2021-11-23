@@ -1,6 +1,7 @@
 #EX1:  Read a file where every row is a Json String and explode it into columns without external schema
 
 from pyspark import SparkContext
+#from pyspark.sql.functions import
 from pyspark.sql import SQLContext
 #from pyspark.sql.functions import from_json, col
 json_file_path = r'.\data\inp.json'

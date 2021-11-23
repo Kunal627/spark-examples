@@ -10,7 +10,7 @@ from pyspark import SparkContext
 from pyspark.sql import SQLContext
 import json
 
-schemapath = r'.\data\simpleavro.avsc'
+schemapath = r'.\data\deviceEventsSchema.avsc'
 #csvpath = r".\data\people.txt"
 
 def inpschema(schemapath):
